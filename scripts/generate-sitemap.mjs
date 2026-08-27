@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 
 // ─── Единственное место для домена ───────────────────────────────
-const DOMAIN = "https://techcenter15.ru";
+const DOMAIN = "https://tc15.ru";
 const TODAY = new Date().toISOString().split("T")[0];
 
 // ─── Валидатор slug ──────────────────────────────────────────────
