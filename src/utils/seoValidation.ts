@@ -1,7 +1,7 @@
 // Dev-only SEO validator for service, category, make pages.
 import { allServices, categories, makes } from "@/data/services";
 
-const DOMAIN = "https://techcenter15.ru";
+const DOMAIN = "https://tc15.ru";
 
 const RULES = {
   title: { min: 10, max: 60 },
