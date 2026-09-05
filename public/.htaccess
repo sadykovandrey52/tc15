@@ -1,10 +1,18 @@
 Options -MultiViews
 RewriteEngine On
 
-# Serve existing files and directories directly
+# Canonical production URL: HTTPS + non-www.
+RewriteCond %{HTTP_HOST} ^www\.tech-centre15\.ru$ [NC]
+RewriteRule ^ https://tech-centre15.ru%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^tech-centre15\.ru$ [NC]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://tech-centre15.ru%{REQUEST_URI} [R=301,L]
+
+# Serve existing files and directories directly.
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# React Router fallback
+# React Router fallback.
 RewriteRule ^ index.html [L]
