@@ -16,7 +16,7 @@ type Props = {
   faqContext?: string;
 };
 
-const SITE = "https://tc15.ru";
+const SITE = "https://tech-centre15.ru";
 
 const ADDRESS = {
   "@type": "PostalAddress",
