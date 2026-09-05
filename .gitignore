@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Generated SEO files. scripts/generate-sitemap.mjs is the source of truth.
+/public/robots.txt
+/public/sitemap.xml
+/public/og-image.jpg
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
