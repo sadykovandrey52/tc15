@@ -25,6 +25,12 @@ jobs:
           rm -f tc15-beget-deploy.zip
           cd dist
           zip -r ../tc15-beget-deploy.zip .
+      - name: Upload Beget deploy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tc15-beget-deploy
+          path: tc15-beget-deploy.zip
+          if-no-files-found: error
       - name: Commit production files
         run: |
           git config user.name "github-actions[bot]"
