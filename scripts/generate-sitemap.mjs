@@ -1,18 +1,18 @@
 // Generates public/sitemap.xml and public/robots.txt from src/data/services.ts.
 // Strict: validates slugs, detects duplicate URLs, logs every URL with source.
 // Runs as `prebuild` so output is always fresh before vite build.
-import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 
-// ─── Единственное место для домена ───────────────────────────────
+// ─── Единственный боевой домен проекта ──────────────────────────
 const DOMAIN = "https://tech-centre15.ru";
 const TODAY = new Date().toISOString().split("T")[0];
 
-// ─── Валидатор slug ──────────────────────────────────────────────
+// ─── Валидатор slug ───────────────────────────────────────────
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 function validateSlug(slug, source) {
   if (!slug || !slug.trim()) {
@@ -25,7 +25,7 @@ function validateSlug(slug, source) {
   }
 }
 
-// ─── Парсинг src/data/services.ts ────────────────────────────────
+// ─── Парсинг src/data/services.ts ─────────────────────────────
 const src = readFileSync(resolve(ROOT, "src/data/services.ts"), "utf-8");
 
 // Service URLs: url: "/services/{cat}/{slug}"
@@ -57,7 +57,7 @@ const blogSlugs = [...src.matchAll(/slug:\s*"([a-z0-9-]+)",\s*url:\s*"\/blog\//g
 blogSlugs.forEach((s) => validateSlug(s, `blog ${s}`));
 const blogUrls = blogSlugs.map((s) => `/blog/${s}`);
 
-// ─── Статические страницы ───────────────────────────────────────
+// ─── Статические страницы ─────────────────────────────────────
 const STATIC = [
   { url: "/", priority: "1.0", changefreq: "weekly", source: "static" },
   { url: "/services", priority: "0.9", changefreq: "weekly", source: "static" },
@@ -74,7 +74,7 @@ const entries = [
   ...blogUrls.map((u) => ({ url: u, priority: "0.6", changefreq: "monthly", source: `blog:${u}` })),
 ];
 
-// ─── Дубли = ошибка сборки ──────────────────────────────────────
+// ─── Дубли = ошибка сборки ─────────────────────────────────────
 const seen = new Set();
 const dupes = [];
 for (const e of entries) {
@@ -88,7 +88,7 @@ if (dupes.length) {
   process.exit(1);
 }
 
-// ─── Лог ────────────────────────────────────────────────────────
+// ─── Лог ───────────────────────────────────────────────────────
 console.log(`\n[sitemap] Итого URL: ${entries.length}`);
 console.log(`  Статических: ${STATIC.length}`);
 console.log(`  Категорий:   ${categoryUrls.length}`);
@@ -98,7 +98,7 @@ console.log(`  Блог:        ${blogUrls.length}`);
 console.log(`\n[sitemap] Список:`);
 entries.forEach((e) => console.log(`  ${e.url}  [${e.source}]`));
 
-// ─── Запись sitemap.xml ─────────────────────────────────────────
+// ─── Запись sitemap.xml ────────────────────────────────────────
 const xml =
   `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
   entries
@@ -123,4 +123,7 @@ Sitemap: ${DOMAIN}/sitemap.xml
 `;
 writeFileSync(resolve(ROOT, "public/robots.txt"), robots, "utf-8");
 
-console.log(`\n✅ sitemap.xml (${entries.length} URL) + robots.txt → public/`);
+// Stable Open Graph image on the canonical domain.
+copyFileSync(resolve(ROOT, "src/assets/hero-service.jpg"), resolve(ROOT, "public/og-image.jpg"));
+
+console.log(`\n✅ sitemap.xml (${entries.length} URL) + robots.txt + og-image.jpg → public/`);
