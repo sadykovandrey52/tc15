@@ -5,4 +5,4 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /404
 
-Sitemap: https://tc15.ru/sitemap.xml
+Sitemap: https://tech-centre15.ru/sitemap.xml
